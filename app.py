@@ -27,8 +27,8 @@ def post_create_item():
         return 'sorry their was a problem'
 
 
-@app.post('/api/update')
-def update_item():
+@app.patch('/api/update')
+def update_items():
     item_id = request.json.get('item_id')
     item_stock = request.json.get('item_stock')
     update_item = dbhelper.run_statment('CALL update_item(?,?)', [item_id, item_stock])
@@ -48,5 +48,27 @@ def delete_item():
     else:
         return 'sorry their was a problem'
 
+#-----------------------------------------------------------------------------
+
+@app.get('/api/employee')
+def get_employee_with_id():
+    employee_id = request.args.get('employee_id')
+    all_employees = dbhelper.run_statment('CALL get_employees(?)', [employee_id])
+    if(type(all_employees) == list):
+        all_employees_json = json.dumps(all_employees, default=str)
+        return all_employees_json
+    else:
+        return 'sorry their was a problem'
+
+
+@app.post('/api/employee/post')
+def post_employees():
+    employee_name = request.json.get('employee_name')
+    employee_position = request.json.get('employee_position')
+    employee_hourly_wage = request.json.get('employee_hourly_wage')
+    create_employee = dbhelper.run_statment('CALL create_employee(?,?,?)', [employee_name, employee_position, employee_hourly_wage])
+    if(type(create_employee) == list):
+        create_employee_json = json.dumps(create_employee, default=str)
+        return create_employee_json
 
 app.run(debug=True)
